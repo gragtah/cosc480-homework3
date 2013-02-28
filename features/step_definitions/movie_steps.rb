@@ -22,7 +22,11 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
-  rating_list.split(' ') each do |rating|
-    uncheck == 'un' ? step %{I uncheck "ratings_#{rating}"} : step %{I check "ratings_#{rating}"}
+  rating_list.split(' ').each do |rating|
+    if uncheck
+        step %{I uncheck "ratings_#{rating}"}
+    else
+        step %{I check "ratings_#{rating}"}
+    end
   end
 end
