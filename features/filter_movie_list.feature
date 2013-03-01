@@ -23,12 +23,12 @@ Background: movies have been added to database
   
 Scenario: restrict to movies with 'PG' or 'R' ratings
   When I check the following ratings: PG, R 
-  And I uncheck the following ratings: PG-13, G 
+  And I uncheck the following ratings: PG-13, G, NC-17 
   And I press "Refresh"
-  # enter step(s) to ensure that PG and R movies are visible
-  # enter step(s) to ensure that other movies are not visible
   Then I should see movies with the following ratings: PG, R
-  And I should not see movies with the following ratings: PG-13, G
+  And I should not see movies with the following ratings: PG-13, G, NC-17
 
 Scenario: all ratings selected
-  # see assignment
+  When I check all the ratings
+  And I press "Refresh"
+  Then I should see all of the movies

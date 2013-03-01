@@ -29,6 +29,17 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   end
 end
 
+When /I check all the ratings/ do 
+  Movie.all_ratings.each do |rating|
+    step %{I check "ratings_#{rating}"}
+  end
+end
+
+Then /I should see all of the movies/ do
+  rows = page.all("table#movies tr").size - 1
+  assert_equal rows, Movie.count
+end
+
 Then /I should (not )?see movies with the following ratings: (.*)/ do |not_show, rating_list|
     Movie.find_all_by_rating(rating_list.gsub(',', '').split(' ')).each do |movie|
         if not_show   
