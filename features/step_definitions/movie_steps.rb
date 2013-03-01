@@ -10,9 +10,8 @@ end
 #   on the same page
 
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
-  #  ensure that that e1 occurs before e2.
-  #  page.body is the entire content of the page as a string.
-  flunk "Unimplemented"
+  body = page.body().downcase
+  body.index(e1.downcase) < body.index(e2.downcase)
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -47,5 +46,13 @@ Then /I should (not )?see movies with the following ratings: (.*)/ do |not_show,
         else
             step %{I should see "#{movie[:title]}"}
         end
+    end
+end
+
+Then /I should see the movies sorted (alphabetically|by release date)/ do |sort_choice|
+    sort = sort_choice == 'alphabetically' ? 'title' : 'release_date'
+    movies = Movie.order(sort)
+    0.upto(movies.length - 2) do |i|
+        step %{I should see "#{movies[i]["title"]}" before "#{movies[i+1]["title"]}"}
     end
 end
