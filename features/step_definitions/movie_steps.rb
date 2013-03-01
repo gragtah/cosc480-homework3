@@ -2,8 +2,6 @@
 
 Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
-    # each returned element will be a hash whose key is the table header.
-    # you should arrange to add that movie to the database here.
     Movie.create!(movie)
   end
 end
@@ -22,11 +20,21 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
-  rating_list.split(' ').each do |rating|
+  rating_list.gsub(',', '').split(' ').each do |rating|
     if uncheck
         step %{I uncheck "ratings_#{rating}"}
     else
         step %{I check "ratings_#{rating}"}
     end
   end
+end
+
+Then /I should (not )?see movies with the following ratings: (.*)/ do |not_show, rating_list|
+    Movie.find_all_by_rating(rating_list.gsub(',', '').split(' ')).each do |movie|
+        if not_show   
+            step %{I should not see "#{movie[:title]}"}
+        else
+            step %{I should see "#{movie[:title]}"}
+        end
+    end
 end
